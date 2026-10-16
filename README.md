@@ -148,7 +148,7 @@ Every single advanced software engineering discipline has been architected with 
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Thrizzio/taskFlow.git PaceKit
+git clone https://github.com/areesh-ahmed/PaceKit.git
 cd PaceKit
 ```
 
