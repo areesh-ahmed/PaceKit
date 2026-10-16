@@ -40,8 +40,12 @@ app.get('/api/health', (req, res) => {
 // Boot wrapper using async/await naturally
 const startServer = async () => {
     try {
-        await mongoose.connect(config.MONGODB_URI as string);
-        console.log('Connected to MongoDB');
+        try {
+            await mongoose.connect(config.MONGODB_URI as string, { serverSelectionTimeoutMS: 2000 });
+            console.log('Connected to MongoDB');
+        } catch (dbErr: any) {
+            console.warn('MongoDB connection failed (running in offline/disconnected mode):', dbErr.message);
+        }
 
         // Initialize PG for analytics schema support
         await initPgDB();
@@ -51,7 +55,11 @@ const startServer = async () => {
 
         httpServer.listen(config.PORT, () => {
             console.log(`Server running on port ${config.PORT}`);
-            startScheduler();
+            try {
+                startScheduler();
+            } catch (schedErr: any) {
+                console.warn('Scheduler warning:', schedErr.message);
+            }
         });
     } catch (error) {
         console.error('Failed to start server:', error);
